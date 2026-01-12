@@ -438,6 +438,11 @@ const CartBill = ({user}) => {
             return;
         }
         
+        if (!contact) {
+            toast.error('Please add shipping information');
+            return;
+        }
+        
         const cardElement = elements?.getElement(CardElement);
         if (!stripe || !cardElement) {
             toast.error("Stripe or card element not loaded");

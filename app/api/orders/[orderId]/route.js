@@ -2,7 +2,6 @@ import connectDB from "@/lib/db";
 import Order from "@/lib/models/Order";
 import { NextResponse } from "next/server";
 
-// GET - Get order by order ID and user ID
 export async function GET(request, { params }) {
     try {
         const { orderId } = params;
@@ -20,15 +19,20 @@ export async function GET(request, { params }) {
         
         if (!order) {
             return NextResponse.json(
-                { success: false, message: "No order found with the specified ID." },
+                { success: false, message: "No order found with specified ID." },
                 { status: 404 }
             );
         }
         
+        const transformedOrder = {
+            ...order.toObject(),
+            id: order._id.toString()
+        };
+        
         return NextResponse.json({
             success: true,
             message: "Order details retrieved successfully!",
-            order: order
+            order: transformedOrder
         });
     } catch (error) {
         console.error('Error retrieving order details:', error);
@@ -39,7 +43,6 @@ export async function GET(request, { params }) {
     }
 }
 
-// PUT - Update order (for riders)
 export async function PUT(request, { params }) {
     try {
         const { orderId } = params;
@@ -48,7 +51,6 @@ export async function PUT(request, { params }) {
 
         await connectDB();
         
-        // Check if rider already exists for this order
         const existingOrder = await Order.findOne({ 
             _id: orderId, 
             rider_id: { $ne: null } 

@@ -2,14 +2,16 @@ import connectDB from "@/lib/db";
 import Order from "@/lib/models/Order";
 import { NextResponse } from "next/server";
 
-export async function GET(request, { params }) {
+export async function GET() {
     try {
-        const { userId } = params;
         await connectDB();
         
-        const orders = await Order.find({ user_id: userId });
+        const pendingOrders = await Order.find({
+            status: 'Pending',
+            rider_id: null
+        }).sort({ createdAt: -1 });
         
-        const transformedOrders = orders.map(order => ({
+        const transformedOrders = pendingOrders.map(order => ({
             ...order.toObject(),
             id: order._id.toString()
         }));
@@ -19,9 +21,9 @@ export async function GET(request, { params }) {
             orders: transformedOrders
         });
     } catch (error) {
-        console.error('Error fetching orders by user ID:', error);
+        console.error('Error fetching pending orders:', error);
         return NextResponse.json(
-            { success: false, error: error.message },
+            { success: false, message: "Failed to fetch pending orders", error: error.message },
             { status: 500 }
         );
     }

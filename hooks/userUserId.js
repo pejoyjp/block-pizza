@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 
 const useUserId = () => {
   const [userId, setUserId] = useState(null);
+  const { cache } = useSWRConfig();
   
   const { data, error, mutate } = useSWR('/api/auth/me', async (url) => {
     const response = await fetch(url);
@@ -11,6 +12,11 @@ const useUserId = () => {
     }
     const result = await response.json();
     return result;
+  }, {
+    dedupingInterval: 60000,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    fallbackData: null
   });
 
   useEffect(() => {
@@ -50,7 +56,10 @@ const useUserId = () => {
         method: 'POST',
       });
       setUserId(null);
-      mutate(); // Refresh auth state
+      mutate(null, false); // Clear cache without revalidating
+      
+      // Clear all SWR cache
+      cache.clear();
     } catch (error) {
       console.error('Logout failed:', error);
     }

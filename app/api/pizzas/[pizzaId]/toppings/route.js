@@ -28,6 +28,7 @@ export async function GET(request, { params }) {
             quantity: pizzaToppingMap[topping._id.toString()] || 0,
             price: topping.price,
             isVeg: topping.is_veg,
+            description: topping.description || '',
             total_price: (pizzaToppingMap[topping._id.toString()] || 0) * topping.price
         }));
         

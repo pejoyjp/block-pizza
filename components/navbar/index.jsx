@@ -70,6 +70,14 @@ const Navbar = ()=> {
                   </NavigationMenuItem>
 
                   <NavigationMenuItem>
+                  <Link href="/nutrition" legacyBehavior passHref>
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Nutrition
+                      </NavigationMenuLink>
+                  </Link>
+                  </NavigationMenuItem>
+
+                  <NavigationMenuItem>
                   <Link href="/chefs" legacyBehavior passHref>
                       <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                         Chefs
@@ -163,7 +171,15 @@ const Navbar = ()=> {
                         </NavigationMenuItem>
 
                         <NavigationMenuItem>
-                        <Link href="/menu" legacyBehavior passHref>
+                        <Link href="/nutrition" legacyBehavior passHref>
+                            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                              Nutrition
+                            </NavigationMenuLink>
+                        </Link>
+                        </NavigationMenuItem>
+
+                        <NavigationMenuItem>
+                        <Link href="/chefs" legacyBehavior passHref>
                             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                               Chefs
                             </NavigationMenuLink>

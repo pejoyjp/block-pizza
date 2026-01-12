@@ -48,7 +48,7 @@ const Order = () => {
           {sortedOrders?.map((order) => (
             <TableRow
               key={order.id}
-              onClick={() => route.push(`/order/order?orderId=${order.id}`)}
+              onClick={() => route.push(`/order/${order.id}`)}
               className="cursor-pointer"
             >
               <TableCell>{order.status}</TableCell>

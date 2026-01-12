@@ -10,6 +10,11 @@ const useUser = (userId)=>{
                 throw new Error(result.error || 'Failed to fetch user');
             }
             return result;
+        },
+        {
+            dedupingInterval: 60000,
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false
         }
     );
     return {

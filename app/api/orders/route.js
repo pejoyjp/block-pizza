@@ -2,7 +2,6 @@ import connectDB from "@/lib/db";
 import Order from "@/lib/models/Order";
 import { NextResponse } from "next/server";
 
-// POST - Create new order
 export async function POST(request) {
     try {
         const data = await request.json();
@@ -10,7 +9,6 @@ export async function POST(request) {
 
         await connectDB();
 
-        // 准备订单中的披萨数据
         const pizzas = items.map(item => ({
             pizza_id: item.pizza_id,
             quantity: item.quantity,
@@ -19,7 +17,6 @@ export async function POST(request) {
             customizations: item.customizations
         }));
 
-        // 创建新订单
         const newOrder = new Order({
             user_id: userId,
             total_price: totalPrice,
@@ -35,7 +32,7 @@ export async function POST(request) {
         return NextResponse.json({
             success: true,
             message: "Order saved successfully!",
-            orderId: savedOrder._id
+            orderId: savedOrder._id.toString()
         });
     } catch (error) {
         console.error('Error saving order:', error);
@@ -46,13 +43,18 @@ export async function POST(request) {
     }
 }
 
-// GET - Get all orders
 export async function GET() {
     try {
         await connectDB();
         
         const orders = await Order.find({});
-        return NextResponse.json({ success: true, orders: orders });
+        
+        const transformedOrders = orders.map(order => ({
+            ...order.toObject(),
+            id: order._id.toString()
+        }));
+        
+        return NextResponse.json({ success: true, orders: transformedOrders });
     } catch (error) {
         return NextResponse.json(
             { success: false, message: "Failed to get all orders", error: error.message },
@@ -61,7 +63,6 @@ export async function GET() {
     }
 }
 
-// PUT - Update order status
 export async function PUT(request) {
     try {
         const data = await request.json();

@@ -1,5 +1,6 @@
 import connectDB from "@/lib/db";
 import Order from "@/lib/models/Order";
+import Pizza from "@/lib/models/Pizza";
 import { NextResponse } from "next/server";
 
 // GET - Get order pizzas by order ID
@@ -18,7 +19,24 @@ export async function GET(request, { params }) {
             );
         }
 
-        return NextResponse.json({ success: true, orderPizzas: order.pizzas });
+        const pizzasWithDetails = await Promise.all(
+            order.pizzas.map(async (orderPizza) => {
+                const pizza = await Pizza.findById(orderPizza.pizza_id);
+                return {
+                    ...orderPizza.toObject(),
+                    pizzaDetails: pizza ? {
+                        id: pizza._id,
+                        name: pizza.name,
+                        description: pizza.description,
+                        img: pizza.img,
+                        veg: pizza.veg,
+                        is_popular: pizza.is_popular
+                    } : null
+                };
+            })
+        );
+
+        return NextResponse.json({ success: true, orderPizzas: pizzasWithDetails });
     } catch (error) {
         return NextResponse.json(
             { success: false, message: "Failed to get order pizzas", error: error.message },

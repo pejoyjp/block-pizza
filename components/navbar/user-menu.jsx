@@ -30,13 +30,20 @@ import { BarChart3 } from "lucide-react"
 const UserMenu =() => {
 
   
-   const {userId} = useUserId()
+   const {userId, logout} = useUserId()
    const {data} = useUser(userId)
    
 
-   const handleLogout = ()=>{
-    localStorage.clear();
-    window.location.reload()
+   const handleLogout = async ()=>{
+    try {
+      await logout();
+      localStorage.clear();
+      window.location.reload();
+    } catch (error) {
+      console.error('Logout failed:', error);
+      localStorage.clear();
+      window.location.reload();
+    }
    }
 
     return (

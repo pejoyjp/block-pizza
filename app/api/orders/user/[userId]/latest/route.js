@@ -2,7 +2,6 @@ import connectDB from "@/lib/db";
 import Order from "@/lib/models/Order";
 import { NextResponse } from "next/server";
 
-// GET - Get latest order by user ID
 export async function GET(request, { params }) {
     try {
         const { userId } = params;
@@ -19,9 +18,14 @@ export async function GET(request, { params }) {
             );
         }
         
+        const transformedOrder = {
+            ...latestOrder.toObject(),
+            id: latestOrder._id.toString()
+        };
+        
         return NextResponse.json({
             success: true,
-            latestOrder: latestOrder
+            latestOrder: transformedOrder
         });
     } catch (error) {
         console.error('Error fetching the latest order by user ID:', error);

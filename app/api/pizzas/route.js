@@ -2,22 +2,30 @@ import connectDB from "@/lib/db";
 import Pizza from "@/lib/models/Pizza";
 import { NextResponse } from "next/server";
 
-// GET - Get all pizzas or popular pizzas
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 8;
+
 export async function GET(request) {
     try {
         const { searchParams } = new URL(request.url);
         const popular = searchParams.get('popular');
+        const page = parseInt(searchParams.get('page')) || DEFAULT_PAGE;
+        const limit = parseInt(searchParams.get('limit')) || DEFAULT_LIMIT;
         
         await connectDB();
         
         let data;
+        let total;
+        
         if (popular === 'true') {
             data = await Pizza.find({ is_popular: true });
+            total = data.length;
         } else {
-            data = await Pizza.find({});
+            total = await Pizza.countDocuments({});
+            const skip = (page - 1) * limit;
+            data = await Pizza.find({}).skip(skip).limit(limit);
         }
         
-        // Transform data to include id field for frontend compatibility
         const transformedData = data.map(pizza => ({
             ...pizza.toObject(),
             id: pizza._id.toString()
@@ -25,7 +33,13 @@ export async function GET(request) {
         
         return NextResponse.json({
             success: true,
-            data: transformedData
+            data: transformedData,
+            pagination: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit)
+            }
         });
     } catch (error) {
         return NextResponse.json(

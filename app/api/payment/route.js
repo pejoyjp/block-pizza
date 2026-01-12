@@ -36,7 +36,7 @@ export async function POST(request) {
         });
 
         const result = await newOrder.save();
-        const orderId = result._id;
+        const orderId = result._id.toString();
         console.log(orderId);
 
         return NextResponse.json({

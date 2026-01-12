@@ -42,7 +42,9 @@ const PaymentSuccess = () => {
         <p className="text-lg text-gray-700 mb-6">Thank you for your purchase. Your payment has been successfully processed.</p>
         <div className="flex justify-center items-center mb-6">
           <CircleCheckBig className="text-green-500 mr-2 h-12 w-12" />
-          <p className="text-lg font-bold text-gray-700">Order ID: {data?.latestOrder.id}</p>
+          <Link href={`/order/${data?.latestOrder.id}`} className="text-lg font-bold text-gray-700 hover:text-green-500 cursor-pointer">
+            Order ID: {data?.latestOrder.id}
+          </Link>
         </div>
         <div className="border-t border-gray-200 pt-4 pb-6">
           <h2 className="text-xl font-semibold mb-2">Order Details</h2>
